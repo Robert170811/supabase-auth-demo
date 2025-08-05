@@ -2,8 +2,9 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Регистрация — Supabase</title>
-  <!-- 1. Подключаем Supabase SDK до всего остального JS -->
+  <title>Регистрация</title>
+
+  <!-- ✅ 1. СНАЧАЛА: подключаем Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
@@ -15,25 +16,27 @@
 
   <p id="message"></p>
 
-  <!-- 2. Код — после подключения библиотеки -->
+  <!-- ✅ 2. ПОТОМ: создаём клиент и функции -->
   <script>
-    // ✅ ВСТАВЬ СВОЙ ANON КЛЮЧ сюда
+    // ⚠️ ЗАМЕНИ это на свой настоящий anon key из Supabase → Settings → API
     const SUPABASE_URL = 'https://oneglovgmwywviiiicbd.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZWdsb3ZnbXd5d3ZpaWlpY2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzQyNzcsImV4cCI6MjA3MDAxMDI3N30.7ypE1a8bF1IPTJt0orJiB2hyLMnjURWaxMl4BfCqp7A'; // вставь реальный anon key
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZWdsb3ZnbXd5d3ZpaWlpY2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzQyNzcsImV4cCI6MjA3MDAxMDI3N30.7ypE1a8bF1IPTJt0orJiB2hyLMnjURWaxMl4BfCqp7A';
 
-    // ⛔️ Ошибка в прошлый раз была здесь: ты вызывал supabase до создания этой переменной
+    // ✅ правильное создание клиента
     const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+    // ✅ функция регистрации
     async function signUp() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
       const { data, error } = await client.auth.signUp({ email, password });
 
+      const msg = document.getElementById('message');
       if (error) {
-        document.getElementById('message').innerText = 'Ошибка: ' + error.message;
+        msg.innerText = 'Ошибка: ' + error.message;
       } else {
-        document.getElementById('message').innerText = 'Письмо подтверждения отправлено!';
+        msg.innerText = 'Проверьте почту для подтверждения.';
       }
     }
   </script>
