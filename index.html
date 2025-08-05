@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <title>Регистрация</title>
 
-  <!-- ✅ 1. СНАЧАЛА: подключаем Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- ✅ Подключаем Supabase SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
   <h1>Регистрация</h1>
@@ -16,21 +16,21 @@
 
   <p id="message"></p>
 
-  <!-- ✅ 2. ПОТОМ: создаём клиент и функции -->
   <script>
-    // ⚠️ ЗАМЕНИ это на свой настоящий anon key из Supabase → Settings → API
-    const SUPABASE_URL = 'https://oneglovgmwywviiiicbd.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZWdsb3ZnbXd5d3ZpaWlpY2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzQyNzcsImV4cCI6MjA3MDAxMDI3N30.7ypE1a8bF1IPTJt0orJiB2hyLMnjURWaxMl4BfCqp7A';
+    // ✅ Создаём клиент (используем globalThis.supabase)
+    const client = window.supabase.createClient(
+      'https://oneglovgmwywviiiicbd.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZWdsb3ZnbXd5d3ZpaWlpY2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzQyNzcsImV4cCI6MjA3MDAxMDI3N30.7ypE1a8bF1IPTJt0orJiB2hyLMnjURWaxMl4BfCqp7A'
+    );
 
-    // ✅ правильное создание клиента
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    // ✅ функция регистрации
     async function signUp() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      const { data, error } = await client.auth.signUp({ email, password });
+      const { data, error } = await client.auth.signUp({
+        email: email,
+        password: password,
+      });
 
       const msg = document.getElementById('message');
       if (error) {
