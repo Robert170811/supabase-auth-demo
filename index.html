@@ -1,90 +1,42 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Регистрация и профиль — Supabase</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <meta charset="UTF-8" />
+  <title>Supabase Регистрация</title>
+  <!-- 1. Сначала подключаем библиотеку Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <h1>Регистрация + Профиль</h1>
-
-  <input id="full_name" type="text" placeholder="Ваше имя">
-  <input id="email" type="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Пароль">
-  <br>
-  <button onclick="signUp()">Регистрация</button>
-  <button onclick="signIn()">Вход</button>
-  <button onclick="signOut()">Выход</button>
-
+  <h1>Регистрация</h1>
+  <input id="email" type="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Пароль" />
+  <button onclick="signUp()">Зарегистрироваться</button>
   <p id="message"></p>
-  <p id="user-info"></p>
 
+  <!-- 2. Затем — и только затем — пишем JS-код -->
   <script>
-    // 🔐 Вставь сюда свои данные
-    const SUPABASE_URL = 'https://ВАШ-ПРОЕКТ.supabase.co';
-    const SUPABASE_ANON_KEY = 'ВАШ_ANON_KEY';
+    // ⚠️ ВСТАВЬ СЮДА СВОИ КЛЮЧИ ИЗ SUPABASE
+    const SUPABASE_URL = 'https://oneglovgmwywviiiicbd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uZWdsb3ZnbXd5d3ZpaWlpY2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ0MzQyNzcsImV4cCI6MjA3MDAxMDI3N30.7ypE1a8bF1IPTJt0orJiB2hyLMnjURWaxMl4BfCqp7A';
+    
+    // Теперь переменная supabase доступна
     const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     async function signUp() {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-      const fullName = document.getElementById('full_name').value;
 
-      // Шаг 1: Регистрация пользователя
-      const { data, error } = await supabase.auth.signUp({ email, password });
-
-      if (error) {
-        document.getElementById('message').innerText = error.message;
-        return;
-      }
-
-      const user = data.user;
-      document.getElementById('message').innerText = 'Подтвердите email для завершения регистрации';
-
-      // Шаг 2: Добавление профиля (только если user уже создан)
-      if (user) {
-        const { error: insertError } = await supabase
-          .from('profiles')
-          .insert([
-            {
-              id: user.id,
-              full_name: fullName,
-              created_at: new Date().toISOString()
-            }
-          ]);
-
-        if (insertError) {
-          console.error('Ошибка при добавлении профиля:', insertError.message);
-        }
-      }
-    }
-
-    async function signIn() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password
+      });
 
       if (error) {
-        document.getElementById('message').innerText = error.message;
+        document.getElementById('message').innerText = 'Ошибка: ' + error.message;
       } else {
-        document.getElementById('message').innerText = 'Вы вошли!';
-        showUser();
+        document.getElementById('message').innerText = 'Письмо отправлено. Подтвердите email.';
       }
     }
-
-    async function signOut() {
-      await supabase.auth.signOut();
-      document.getElementById('message').innerText = 'Вы вышли';
-      showUser();
-    }
-
-    async function showUser() {
-      const { data: { user } } = await supabase.auth.getUser();
-      document.getElementById('user-info').innerText = user ? `Пользователь: ${user.email}` : 'Не авторизован';
-    }
-
-    showUser();
   </script>
 </body>
 </html>
