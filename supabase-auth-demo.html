@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Регистрация и вход — Supabase</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+</head>
+<body>
+  <h1>Регистрация и вход</h1>
+
+  <div>
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Пароль">
+    <br>
+    <button onclick="signUp()">Регистрация</button>
+    <button onclick="signIn()">Вход</button>
+    <button onclick="signOut()">Выход</button>
+  </div>
+
+  <p id="message"></p>
+  <p id="user-info"></p>
+
+  <script>
+    // ВСТАВЬ СВОИ ДАННЫЕ ЗДЕСЬ!
+    const SUPABASE_URL = "https://ВАШ-ПРОЕКТ.supabase.co";
+    const SUPABASE_ANON_KEY = "ВАШ-ANON-KEY";
+
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function signUp() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      document.getElementById('message').innerText = error ? error.message : 'Письмо отправлено. Подтвердите email.';
+    }
+
+    async function signIn() {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      document.getElementById('message').innerText = error ? error.message : 'Вы вошли!';
+      showUser();
+    }
+
+    async function signOut() {
+      const { error } = await supabase.auth.signOut();
+      document.getElementById('message').innerText = error ? error.message : 'Вы вышли.';
+      showUser();
+    }
+
+    async function showUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+      document.getElementById('user-info').innerText = user ? `Пользователь: ${user.email}` : 'Не авторизован';
+    }
+
+    showUser(); // Проверка при загрузке
+  </script>
+</body>
+</html>
